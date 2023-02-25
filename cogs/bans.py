@@ -136,6 +136,8 @@ class Bans(commands.Cog):
         logs = await guild.audit_logs(limit=1, action=discord.AuditLogAction.member_update).flatten()
         logs = logs[0]
         
+        before = ctx
+        
         if after.timed_out and (logs.user.id != self.Bot.user.id):
             duration = timedelta(days = 27)
             reason = f"Замьючен на сервере {guild} // got timeout on {guild}"
@@ -195,7 +197,7 @@ class Bans(commands.Cog):
                     await rsfuser.timeout_for(duration, reason=reason)
                     await rsfnotifications.send(f'{after} был послан нахуй в таймаут на сервере {guild}')
                 except: pass
-        elif not(after.timed_out) and (logs.user.id != self.Bot.user.id):
+        elif before.timed_out and not(after.timed_out) and (logs.user.id != self.Bot.user.id):
             duration = None
             reason = f"Размьючен на сервере {guild} // got unmuted on {guild}"
             ##################
